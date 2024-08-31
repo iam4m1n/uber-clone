@@ -4,9 +4,11 @@ import com.example.onlineTaxi.model.User.normalUser.NormalUserDTO;
 import com.example.onlineTaxi.model.order.OrderDTO;
 import com.example.onlineTaxi.model.payment.PaymentDTO;
 import com.example.onlineTaxi.service.UserService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
     @Override
     public NormalUserDTO getInfo(Long id) {
