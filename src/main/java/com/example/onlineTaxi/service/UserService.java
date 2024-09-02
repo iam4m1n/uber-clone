@@ -1,6 +1,6 @@
 package com.example.onlineTaxi.service;
 
-import com.example.onlineTaxi.model.User.normalUser.NormalUserDTO;
+import com.example.onlineTaxi.model.Users.User.UserDTO;
 import com.example.onlineTaxi.model.order.OrderDTO;
 import com.example.onlineTaxi.model.payment.PaymentDTO;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
-    public NormalUserDTO getInfo(Long id);
+    public UserDTO getInfo(Long id);
 
     public OrderDTO addOrder(OrderDTO orderDTO);
 

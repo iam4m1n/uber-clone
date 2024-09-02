@@ -1,6 +1,6 @@
 package com.example.onlineTaxi.service;
 
-import com.example.onlineTaxi.model.User.normalUser.NormalUser;
+import com.example.onlineTaxi.model.Users.User.User;
 import com.example.onlineTaxi.model.driver.Driver;
 import com.example.onlineTaxi.model.order.Order;
 
@@ -10,14 +10,14 @@ public interface SuperUserService {
 
     // CRUD for normalUser
 
-    public NormalUser addUser();
+    public User addUser();
 
-    public NormalUser getUser(Long id);
-    public List<NormalUser> getUsers();
+    public User getUser(Long id);
+    public List<User> getUsers();
 
-    public NormalUser updateUser();
+    public User updateUser();
 
-    public NormalUser deleteUser();
+    public User deleteUser();
 
 
     // CRUD for Driver

@@ -1,6 +1,6 @@
 package com.example.onlineTaxi.service.impl;
 
-import com.example.onlineTaxi.model.User.normalUser.NormalUserDTO;
+import com.example.onlineTaxi.model.Users.User.UserDTO;
 import com.example.onlineTaxi.model.order.OrderDTO;
 import com.example.onlineTaxi.model.payment.PaymentDTO;
 import com.example.onlineTaxi.service.UserService;
@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Override
-    public NormalUserDTO getInfo(Long id) {
+    public UserDTO getInfo(Long id) {
         return null;
     }
 

@@ -45,4 +45,12 @@ public class UserController {
     }
 
 
+    // test adviser
+//    @GetMapping("/adviser")
+//    public ResponseEntity<String> test(){
+//        throw new NullPointerException("No user found!!!");
+//
+//    }
+
+
 }
