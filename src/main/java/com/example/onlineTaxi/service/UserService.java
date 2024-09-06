@@ -1,6 +1,8 @@
 package com.example.onlineTaxi.service;
 
+import com.example.onlineTaxi.model.AuthenticationResponse;
 import com.example.onlineTaxi.model.Users.User.UserDTO;
+import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.order.OrderDTO;
 import com.example.onlineTaxi.model.payment.PaymentDTO;
 
@@ -19,4 +21,5 @@ public interface UserService {
     public PaymentDTO payment(PaymentDTO paymentDTO);
 
 
+    AuthenticationResponse verify(UserEntity userEntity);
 }

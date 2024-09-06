@@ -1,5 +1,6 @@
-package com.example.onlineTaxi.interceptor;
+package com.example.onlineTaxi.filter;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,14 +17,23 @@ public class ResponseTimeInterceptor implements HandlerInterceptor {
     private static final ThreadLocal<Long> startTimeThreadLocal = new ThreadLocal<>();
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull Object handler
+    ) {
         // Store the start time before the request is processed
         startTimeThreadLocal.set(System.currentTimeMillis());
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull Object handler,
+            Exception ex
+    ) {
         // Calculate response time
         long startTime = startTimeThreadLocal.get();
         long endTime = System.currentTimeMillis();
