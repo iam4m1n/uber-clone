@@ -49,9 +49,9 @@ public class SecurityConfig {
 
         // authorized all the requests exept login and register
         httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers("/login", "/register")
+                .requestMatchers("/login", "/register", "/refresh-token")
                 .permitAll()
-                .anyRequest().authenticated());
+                .anyRequest().permitAll());
 
         // default login, returns the html login even in postman
 //        httpSecurity.formLogin(Customizer.withDefaults());
@@ -66,8 +66,6 @@ public class SecurityConfig {
 
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\nnigaaaaaaaaaaaaaaaaaaa");
 
 
 //        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

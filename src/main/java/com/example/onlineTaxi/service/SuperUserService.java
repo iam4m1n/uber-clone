@@ -2,7 +2,7 @@ package com.example.onlineTaxi.service;
 
 import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.driver.Driver;
-import com.example.onlineTaxi.model.order.Order;
+import com.example.onlineTaxi.model.order.OrderEntity;
 
 import java.util.List;
 
@@ -34,11 +34,11 @@ public interface SuperUserService {
 
     // CRUD for Order
 
-    public Order getOrder(Long id);
-    public List<Order> getOrders();
+    public OrderEntity getOrder(Long id);
+    public List<OrderEntity> getOrders();
 
-    public Order updateOrder();
+    public OrderEntity updateOrder();
 
-    public Order deleteOrder();
+    public OrderEntity deleteOrder();
 
 }

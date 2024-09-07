@@ -98,24 +98,24 @@
 <!--		&lt;!&ndash;			<artifactId>postgis-jdbc</artifactId>&ndash;&gt;-->
 <!--		&lt;!&ndash;			<version>2.5.0</version>&ndash;&gt;-->
 <!--		&lt;!&ndash;		</dependency>&ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>org.locationtech.jts</groupId>-->
-<!--			<artifactId>jts-core</artifactId>-->
-<!--			<version>1.19.0</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.locationtech.jts</groupId>
+			<artifactId>jts-core</artifactId>
+			<version>1.19.0</version>
+		</dependency>
 
 
 <!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.redisson/redisson &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>org.redisson</groupId>-->
-<!--			<artifactId>redisson</artifactId>-->
-<!--			<version>3.35.0</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson</artifactId>
+			<version>3.35.0</version>
+		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-data-redis</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
 
 <!--		<dependency>-->

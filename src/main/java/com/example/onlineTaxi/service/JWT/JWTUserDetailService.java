@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 @Qualifier("beanTwo")
 public class JWTUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String userInfo) throws UsernameNotFoundException {
@@ -23,7 +22,7 @@ public class JWTUserDetailService implements UserDetailsService {
         String username = userInfo.split(" ")[0];
 
         return new UserPrincipal(
-                new UserEntity(null, username, null, null, null, null, Role.USER)
+                UserEntity.builder().username(username).role(Role.USER).build()
         );
     }
 

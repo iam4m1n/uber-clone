@@ -2,16 +2,18 @@ package com.example.onlineTaxi.model.Users.User;
 
 
 import com.example.onlineTaxi.enums.Role;
+import com.example.onlineTaxi.model.driver.Driver;
+import com.example.onlineTaxi.model.order.OrderEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 @Data
@@ -31,12 +33,17 @@ public class UserEntity {
     private String password;
     private Integer age;
 
+    private double balance;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 
 
-//    private ArrayList<Order> orders;
-//    private ArrayList<Payment> payments;
-//    private ArrayList<Driver> drivers;
+    // One-to-Many with Order
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<OrderEntity> orderEntities = new ArrayList<>();
+
 
 }

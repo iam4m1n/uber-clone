@@ -7,11 +7,19 @@ spring:
     username: postgres
     password: 1224
     driver-class-name: org.postgresql.Driver
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000
   jpa:
     hibernate:
       ddl-auto: create-drop
     database: postgresql
     show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 9999
 
 jwt:
   secret: "zOjunKVuH2JggLQVCG9RNcEl3/5SHnhAvhAjabVG/YA="

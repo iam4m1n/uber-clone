@@ -4,17 +4,27 @@ import com.example.onlineTaxi.model.AuthenticationResponse;
 import com.example.onlineTaxi.model.Users.User.UserDTO;
 import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.order.OrderDTO;
+import com.example.onlineTaxi.model.order.OrderEntity;
 import com.example.onlineTaxi.model.payment.PaymentDTO;
 import com.example.onlineTaxi.repository.UserRepository;
 import com.example.onlineTaxi.service.JWT.JWTService;
+import com.example.onlineTaxi.service.JWT.MyUserDetailService;
 import com.example.onlineTaxi.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -28,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(12);
 
     private final JWTService jwtService;
+
+    private final MyUserDetailService myUserDetailService;
 
 
 
@@ -57,6 +69,59 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public UserEntity register(UserEntity userEntity){
         // todo : set the password encoder to bCrypt.encode(userEntity.getPassword()
         userEntity.setPassword(bCrypt.encode(userEntity.getPassword()));
@@ -83,6 +148,60 @@ public class UserServiceImpl implements UserService {
         }
 
         return AuthenticationResponse.builder().accessToken("fail").build();
+    }
+
+
+
+    @Override
+    public void refreshToken(
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        String refreshToken = extractJwtFromRequest(request);
+        String username;
+        if (refreshToken != null && jwtService.validateToken(refreshToken) && jwtService.isRefreshToken(refreshToken)){
+            username = jwtService.extractUserName(refreshToken);
+
+            // todo : add id and role claims
+
+
+
+            if (username != null){
+
+                UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
+
+                if (jwtService.validateToken(refreshToken, userDetails)){
+                    String newAccessToken = jwtService.generateJwtToken(username);
+                    String newRefreshToken = jwtService.generateRefreshToken(username);
+
+                    AuthenticationResponse authenticationResponse = AuthenticationResponse
+                            .builder()
+                            .accessToken(newAccessToken)
+                            .refreshToken(newRefreshToken)
+                            .build();
+                    new ObjectMapper().writeValue(response.getOutputStream(), authenticationResponse);
+
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public OrderEntity travel() {
+        return null;
+    }
+
+    @Override
+    public UserEntity findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
+
+    private String extractJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
 }

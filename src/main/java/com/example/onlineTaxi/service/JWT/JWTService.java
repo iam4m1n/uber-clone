@@ -31,11 +31,14 @@ public class JWTService {
 
     public String generateJwtToken(String username){
         Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("refresh", "false");
         return buildToken(username, jwtExpirationMs, extraClaims);
     }
 
     public String generateRefreshToken(String username){
-        return buildToken(username, refreshExpirationMs, new HashMap<>());
+        Map<String, Object> refreshClaim = new HashMap<>();
+        refreshClaim.put("refresh", "true");
+        return buildToken(username, refreshExpirationMs, refreshClaim);
     }
 
     public String buildToken(String username, long expirationMs , Map<String , Object> claims){
@@ -106,5 +109,9 @@ public class JWTService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public boolean isRefreshToken(String jwtToken) {
+        return extractAllClaim(jwtToken).get("refresh", String.class).equals("true");
     }
 }

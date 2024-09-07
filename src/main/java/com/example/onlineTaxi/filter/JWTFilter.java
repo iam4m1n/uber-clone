@@ -45,7 +45,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String username;
         String id = "";
         String Role = "";
-        if (jwtToken != null && jwtService.validateToken(jwtToken)){
+
+
+//        && !jwtService.isRefreshToken(jwtToken)
+        if (jwtToken != null && jwtService.validateToken(jwtToken) && !jwtService.isRefreshToken(jwtToken)){
             username = jwtService.extractUserName(jwtToken);
 
             // todo : add id and role claims
