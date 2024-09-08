@@ -30,10 +30,6 @@ public class MyUserDetailService implements UserDetailsService {
 
         return new UserPrincipal(user1);
 
-//
-//        return new UserPrincipal(
-//                new UserEntity(null, username, null, null, null, null, Role.USER)
-//        );
     }
 
 

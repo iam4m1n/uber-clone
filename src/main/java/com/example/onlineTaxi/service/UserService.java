@@ -14,24 +14,13 @@ import java.util.List;
 
 public interface UserService {
 
-    public UserDTO getInfo(Long id);
-
-    public OrderDTO addOrder(OrderDTO orderDTO);
-
-    public List<OrderDTO> getOrderHistory(Long id);
-
-    public List<PaymentDTO> getPaymentHistory(Long id);
-
-    public PaymentDTO payment(PaymentDTO paymentDTO);
-
-
-    AuthenticationResponse verify(UserEntity userEntity);
+    AuthenticationResponse verify(String username, String password);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-
-
-    OrderEntity travel();
-
     UserEntity findById(Long userId);
+
+    UserDTO getUserById(Long userId);
+
+    void deleteUserById(Long userId);
 }

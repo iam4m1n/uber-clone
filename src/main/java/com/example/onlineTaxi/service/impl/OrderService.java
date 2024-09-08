@@ -1,22 +1,17 @@
 package com.example.onlineTaxi.service.impl;
 
-import com.example.onlineTaxi.enums.PaymentMethod;
-import com.example.onlineTaxi.enums.PaymentStatus;
+import com.example.onlineTaxi.enums.DriverStatus;
 import com.example.onlineTaxi.enums.TravelStatus;
 import com.example.onlineTaxi.enums.VehicleType;
-import com.example.onlineTaxi.model.CustomPoint;
+import com.example.onlineTaxi.microservices.MscService;
 import com.example.onlineTaxi.model.TravelRequest;
-import com.example.onlineTaxi.model.Users.User.UserDTO;
 import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.Users.UserMapper;
 import com.example.onlineTaxi.model.driver.Driver;
-import com.example.onlineTaxi.model.driver.DriverDTO;
 import com.example.onlineTaxi.model.driver.DriverMapper;
 import com.example.onlineTaxi.model.order.OrderDTO;
 import com.example.onlineTaxi.model.order.OrderEntity;
 import com.example.onlineTaxi.model.order.OrderMapper;
-import com.example.onlineTaxi.model.payment.Payment;
-import com.example.onlineTaxi.model.payment.PaymentDTO;
 import com.example.onlineTaxi.repository.DriverRepository;
 import com.example.onlineTaxi.repository.OrderRepository;
 import com.example.onlineTaxi.repository.UserRepository;
@@ -30,11 +25,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TravelRequestService {
+public class OrderService {
 
 
     private final DriverRepository driverRepository;
@@ -46,9 +40,11 @@ public class TravelRequestService {
     private final DriverMapper driverMapper;
 
     private final UserMapper userMapper;
+
+    private final MscService mscService;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
-    private static final Logger logger = LoggerFactory.getLogger(TravelRequestService.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
 
     private static final double BASE_FARE = 2.50; // Base fare
@@ -81,7 +77,13 @@ public class TravelRequestService {
 
         Driver selectedDriver = nearbyDrivers.get(0); // Simple logic to select the first driver
 
-//        DriverDTO selectedDriverDto =  DriverMapper.driverToDriverDto(selectedDriver);
+        selectedDriver.setStatus(DriverStatus.INTRIP);
+        driverRepository.save(selectedDriver);
+
+        mscService.sendTransaction("new trip: UserId: " + user.getId() + "DriverId: " + selectedDriver.getId());
+        mscService.sendNotification("for Driver with " + selectedDriver.getId() + ": " + "a Traveler found for you!!!");
+        mscService.sendNotification("for User with " + user.getId() + ": " + "a Driver found for you!!!");
+
 
         OrderEntity order = new OrderEntity();
         // Set other order fields as needed
@@ -170,13 +172,38 @@ public class TravelRequestService {
             throw new RuntimeException("No drivers available within 10 km");
         }
 
-        System.out.println("laaaaaaaaaaaaaaaaaaaaaaaaaaa\n\n\n\n\n\n\n\n\n");
-
         return nearbyDrivers;
     }
 
 
     public void deleteTravel(Long orderId) {
         orderRepository.deleteById(orderId);
+        mscService.sendTransaction("travel with id: " + orderId +" has been deleted");
+        mscService.sendNotification("for Driver: your trip has been canceled");
+        mscService.sendNotification("for User: your trip has been canceled");
+    }
+
+    public OrderEntity getById(Long ordeId) {
+        return orderRepository.findById(ordeId).orElseThrow();
+
+    }
+
+    public OrderEntity update(Long orderId, double discount, String discountCode) {
+
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow();
+
+        if (!discountCode.isEmpty())
+            orderEntity.setCost( orderEntity.getCost() -  (orderEntity.getCost() * discount /100.0) );
+
+        mscService.sendTransaction("User with id: " + userMapper + "applied the " + discountCode + " discountCode");
+        mscService.sendNotification("for User: " + discount + "% applied for you");
+
+        return orderRepository.save(orderEntity);
+
+
+    }
+
+    public List<OrderEntity> getAllById() {
+        return orderRepository.findAll();
     }
 }

@@ -27,6 +27,7 @@ public class PaymentController {
     }
 
 
+    // update and create
     @PostMapping("/pay")
     public Payment payment(@RequestParam Long id,
                            @RequestParam String paymentMethod

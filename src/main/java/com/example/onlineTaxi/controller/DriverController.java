@@ -5,7 +5,7 @@ import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.driver.Driver;
 import com.example.onlineTaxi.service.impl.DriverService;
 import com.example.onlineTaxi.service.impl.RedisService;
-import com.example.onlineTaxi.service.impl.TravelRequestService;
+import com.example.onlineTaxi.service.impl.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +24,11 @@ public class DriverController {
 
     private final RedisService redisService;
 
-
-    private final TravelRequestService travelRequestService;
+    private final OrderService orderService;
 
     private final DriverService driverService;
 
-    @GetMapping("all")
+    @GetMapping("all-in-range")
     public ResponseEntity<List<Driver>> allInRange(@RequestParam Long userId,
                                                    @RequestParam double userLat,
                                                    @RequestParam double userLon,
@@ -37,10 +36,6 @@ public class DriverController {
                                                    @RequestParam double startLon,
                                                    @RequestParam double endLat,
                                                    @RequestParam double endLon) {
-        // Fetch user entity based on userId
-//        UserEntity user = userService.findById(userId);
-
-
         List<Driver> drivers = driverService.getAllDrivers(new UserEntity(), userLat, userLon, startLat, startLon, endLat, endLon);
 
         if (drivers != null){
@@ -48,14 +43,6 @@ public class DriverController {
         }else {
             return ResponseEntity.notFound().build();
         }
-
-
-
-
-
-
-
-
     }
 
 

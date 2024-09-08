@@ -3,12 +3,10 @@ package com.example.onlineTaxi.service.impl;
 
 import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.driver.Driver;
-import com.example.onlineTaxi.model.driver.DriverMapper;
 import com.example.onlineTaxi.repository.DriverRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class DriverService {
 
     private final DriverRepository driverRepository;
 
-    private final TravelRequestService travelRequestService;
+    private final OrderService orderService;
 
 
     public Driver getDriverById(Long id){
@@ -78,7 +76,7 @@ public class DriverService {
         }
 
         // If not cached, fetch from the repository
-        List<Driver> drivers = travelRequestService.getAllDrivers(new UserEntity(), userLat, userLon, startLat, startLon, endLat, endLon);
+        List<Driver> drivers = orderService.getAllDrivers(new UserEntity(), userLat, userLon, startLat, startLon, endLat, endLon);
         if (!drivers.isEmpty()) {
             // Cache the list of drivers
             redisTemplate.opsForValue().set(cacheKey, drivers);

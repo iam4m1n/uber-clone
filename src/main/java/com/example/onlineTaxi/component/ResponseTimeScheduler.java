@@ -16,10 +16,17 @@ public class ResponseTimeScheduler {
 
     private final ResponseTimeInterceptor responseTimeInterceptor;
 
+
+
+
+    // todo : sent to a new microservice
+
+
     @Scheduled(fixedRate = 5 * 60 * 1000) // 5 minutes in milliseconds
     public void logAverageResponseTime() {
         double averageResponseTime = responseTimeInterceptor.getAverageResponseTime();
         logger.info("Average Response Time in the last 5 minutes: {} ms", averageResponseTime);
-//        responseTimeInterceptor.clearResponseTimes();
+        responseTimeInterceptor.clearResponseTimes();
+        // chear im khat ro comment kardadam???????????????????
     }
 }

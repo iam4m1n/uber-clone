@@ -22,14 +22,13 @@ public class AuthenticationController {
 
 
     @PostMapping(path = "/register")
-    public UserEntity register(@RequestBody UserEntity userEntity){
-        userService.register(userEntity);
-        return userEntity;
+    public ResponseEntity<UserEntity> register(@RequestBody UserEntity userEntity){
+        return new ResponseEntity<>(userService.register(userEntity), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")
-    public AuthenticationResponse login(@RequestBody UserEntity userEntity){
-        return userService.verify(userEntity);
+    public ResponseEntity<AuthenticationResponse> login(@RequestParam String username, @RequestParam String password){
+        return new ResponseEntity<>(userService.verify(username, password), HttpStatus.OK);
     }
 
     @PostMapping("/refresh-token")
@@ -39,15 +38,5 @@ public class AuthenticationController {
     ) throws IOException {
         userService.refreshToken(request, response);
     }
-
-    @GetMapping("all")
-    public ResponseEntity<List<UserEntity>> getAll(){
-        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
-    }
-
-
-
-
-
 
 }

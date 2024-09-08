@@ -4,6 +4,7 @@ package com.example.onlineTaxi.service.impl;
 import com.example.onlineTaxi.enums.PaymentMethod;
 import com.example.onlineTaxi.enums.PaymentStatus;
 import com.example.onlineTaxi.enums.TravelStatus;
+import com.example.onlineTaxi.microservices.MscService;
 import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.order.OrderEntity;
 import com.example.onlineTaxi.model.payment.Payment;
@@ -28,8 +29,9 @@ public class PaymentService {
 
     private final UserRepository userRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(TravelRequestService.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
+    private final MscService mscService;
 
 
 
@@ -61,6 +63,9 @@ public class PaymentService {
             orderRepository.save(order);
 
             userRepository.save(userEntity);
+
+            mscService.sendTransaction("Order with id " + order.getId() + " has been paid by userId: " + userEntity.getId());
+            mscService.sendNotification("for Driver: the traveler paid the payment!");
 
             logger.info("Successfully paid!!!");
         }else {

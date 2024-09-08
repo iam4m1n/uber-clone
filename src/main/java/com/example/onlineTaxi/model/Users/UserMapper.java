@@ -20,5 +20,12 @@ public class UserMapper {
     }
 
 
+    public static UserDTO userToUserDto(UserEntity userEntity) {
+        return UserDTO.builder()
+                .username(userEntity.getUsername())
+                .fullName(userEntity.getFullName())
+                .phoneNumber(userEntity.getPhoneNumber())
+                .build();
 
+    }
 }

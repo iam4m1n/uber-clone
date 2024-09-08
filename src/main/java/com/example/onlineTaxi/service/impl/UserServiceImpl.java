@@ -1,8 +1,10 @@
 package com.example.onlineTaxi.service.impl;
 
+import com.example.onlineTaxi.microservices.MscService;
 import com.example.onlineTaxi.model.AuthenticationResponse;
 import com.example.onlineTaxi.model.Users.User.UserDTO;
 import com.example.onlineTaxi.model.Users.User.UserEntity;
+import com.example.onlineTaxi.model.Users.UserMapper;
 import com.example.onlineTaxi.model.order.OrderDTO;
 import com.example.onlineTaxi.model.order.OrderEntity;
 import com.example.onlineTaxi.model.payment.PaymentDTO;
@@ -25,7 +27,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,105 +45,32 @@ public class UserServiceImpl implements UserService {
 
     private final MyUserDetailService myUserDetailService;
 
-
-
-
-    @Override
-    public UserDTO getInfo(Long id) {
-        return null;
-    }
-
-    @Override
-    public OrderDTO addOrder(OrderDTO orderDTO) {
-        return null;
-    }
-
-    @Override
-    public List<OrderDTO> getOrderHistory(Long id) {
-        return null;
-    }
-
-    @Override
-    public List<PaymentDTO> getPaymentHistory(Long id) {
-        return null;
-    }
-
-    @Override
-    public PaymentDTO payment(PaymentDTO paymentDTO) {
-        return null;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private final MscService mscService;
 
 
     public UserEntity register(UserEntity userEntity){
         // todo : set the password encoder to bCrypt.encode(userEntity.getPassword()
         userEntity.setPassword(bCrypt.encode(userEntity.getPassword()));
-        UserEntity savedUser = userRepository.save(userEntity);
-        return savedUser;
-    }public List<UserEntity> findAll() {
-        return userRepository.findAll();
+
+        mscService.sendTransaction("new user registered at " + new Date());
+
+        return userRepository.save(userEntity);
     }
 
-    public AuthenticationResponse verify(UserEntity userEntity) {
+
+    public List<UserDTO> findAll() {
+        return userRepository.findAll().stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
+    }
+
+    public AuthenticationResponse verify(String username, String password) {
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userEntity.getUsername(), userEntity.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
         if (authentication.isAuthenticated()) {
 
-            String accessToken = jwtService.generateJwtToken(userEntity.getUsername());
-            String refreshToken = jwtService.generateRefreshToken(userEntity.getUsername());
+            String accessToken = jwtService.generateJwtToken(username);
+            String refreshToken = jwtService.generateRefreshToken(password);
 
-
+            mscService.sendTransaction("User with username: " + username + " has been logged in at " + new Date());
             return AuthenticationResponse
                     .builder()
                     .accessToken(accessToken)
@@ -160,11 +91,6 @@ public class UserServiceImpl implements UserService {
         String username;
         if (refreshToken != null && jwtService.validateToken(refreshToken) && jwtService.isRefreshToken(refreshToken)){
             username = jwtService.extractUserName(refreshToken);
-
-            // todo : add id and role claims
-
-
-
             if (username != null){
 
                 UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
@@ -172,6 +98,8 @@ public class UserServiceImpl implements UserService {
                 if (jwtService.validateToken(refreshToken, userDetails)){
                     String newAccessToken = jwtService.generateJwtToken(username);
                     String newRefreshToken = jwtService.generateRefreshToken(username);
+
+                    mscService.sendTransaction("new access and refresh token made for user: " + username);
 
                     AuthenticationResponse authenticationResponse = AuthenticationResponse
                             .builder()
@@ -186,14 +114,21 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public OrderEntity travel() {
-        return null;
-    }
 
     @Override
     public UserEntity findById(Long userId) {
         return userRepository.findById(userId).orElseThrow();
+    }
+
+    @Override
+    public UserDTO getUserById(Long userId) {
+        return UserMapper.userToUserDto(userRepository.findById(userId).orElseThrow());
+    }
+
+    @Override
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
+        mscService.sendTransaction("User with id: " + userId + " has been deleted");
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {

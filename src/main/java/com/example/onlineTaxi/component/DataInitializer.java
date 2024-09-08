@@ -4,6 +4,7 @@ import com.example.onlineTaxi.enums.Colors;
 import com.example.onlineTaxi.enums.DriverStatus;
 import com.example.onlineTaxi.enums.Role;
 import com.example.onlineTaxi.enums.VehicleType;
+import com.example.onlineTaxi.microservices.MscService;
 import com.example.onlineTaxi.model.Users.User.UserEntity;
 import com.example.onlineTaxi.model.driver.Driver;
 import com.example.onlineTaxi.model.vehicle.Vehicle;
@@ -41,6 +42,9 @@ public class DataInitializer {
     private final PaymentRepository paymentRepository;
 
     private final GeometryFactory geometryFactory = new GeometryFactory();
+
+    private final MscService mscService;
+
 
     @PostConstruct
     public void init() {
@@ -182,5 +186,13 @@ public class DataInitializer {
         }
 
         return vehicles;
+    }
+
+
+    @PostConstruct
+    public void rebbit(){
+        mscService.sendNotification("every thins is good as hell!!!");
+
+        mscService.sendTransaction("chi dare misheeeeeeeee??????????????");
     }
 }

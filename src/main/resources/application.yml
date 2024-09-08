@@ -20,9 +20,16 @@ spring:
     redis:
       host: localhost
       port: 9999
+      database: 7
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 jwt:
   secret: "zOjunKVuH2JggLQVCG9RNcEl3/5SHnhAvhAjabVG/YA="
   expiration: 60000 # Expiration in milliseconds (1 day in this case)
   refresh-token:
     expiration : 600000   # 10 Days
+

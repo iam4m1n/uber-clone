@@ -29,5 +29,18 @@ public class OrderMapper {
     }
 
 
+    public static OrderDTO orderToOrderDto(OrderEntity order) {
+        return OrderDTO
+                .builder()
+                .modifiedTime(order.getModifiedTime())
+                .type(order.getType())
+                .status(order.getStatus())
+                .user(UserMapper.userToUserDto(order.getUser()))
+                .driver(DriverMapper.driverToDriverDto(order.getDriver()))
+                .paymentMethod(order.getPayment())
+                .startPoint(new CustomPoint(order.getStartPoint()))
+                .endPoint(new CustomPoint(order.getEndPoint()))
+                .build();
 
+    }
 }
