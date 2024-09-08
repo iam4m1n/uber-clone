@@ -12,6 +12,8 @@ import com.example.onlineTaxi.repository.OrderRepository;
 import com.example.onlineTaxi.repository.PaymentRepository;
 import com.example.onlineTaxi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,8 +35,7 @@ public class PaymentService {
 
     private final MscService mscService;
 
-
-
+    private RedissonClient redissonClient;
 
 
     public Payment findById(Long id) {
@@ -44,14 +45,49 @@ public class PaymentService {
 
 
 
-    public Payment payThePaymentByOrderId(Long id, String paymentMethod) {
+    public Payment processPayment(Long orderId, String paymentMethod) {
 
-        OrderEntity order = orderRepository.findById(id).orElseThrow();
+//
+//        RLock lock = redissonClient.getLock("payment_lock_" + orderId);
+//
+//        try {
+//            // Try to acquire the lock, with a maximum wait time of 10,000 ms (10 seconds)
+//            if (lock.tryLock(10000)) {  // Only wait time in milliseconds
+//                try {
+//                    // Critical section (payment processing logic)
+//                    System.out.println("Processing payment for order: " + orderId);
+//                    // Your payment processing logic goes here
+//                } finally {
+//                    // Ensure the lock is released after processing
+//                    lock.unlock();
+//                }
+//            } else {
+//                // Handle the case when the lock couldn't be acquired
+//                System.out.println("Could not acquire lock for order: " + orderId);
+//            }
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//            // Handle the interruption
+//        }
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+        OrderEntity order = orderRepository.findById(orderId).orElseThrow();
 
         UserEntity userEntity = userRepository.findById(order.getUser().getId()).orElseThrow();
 
         if (order.getPayment() == null)
-            order.setPayment(Payment.builder().Id(id).paymentAmount(order.getCost()).paymentMethod(PaymentMethod.valueOf(paymentMethod)).modifiedTime(new Date()).status(PaymentStatus.PENDING).build());
+            order.setPayment(Payment.builder().Id(orderId).paymentAmount(order.getCost()).paymentMethod(PaymentMethod.valueOf(paymentMethod)).modifiedTime(new Date()).status(PaymentStatus.PENDING).build());
 
         if (order.getStatus().equals(TravelStatus.Ongoing) && !(order.getPayment().getStatus().equals(PaymentStatus.COMPLETED) && userEntity.getBalance() >= order.getCost())){
 

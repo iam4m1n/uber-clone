@@ -32,7 +32,7 @@ public class PaymentController {
     public Payment payment(@RequestParam Long id,
                            @RequestParam String paymentMethod
     ){
-        return paymentService.payThePaymentByOrderId(id, paymentMethod);
+        return paymentService.processPayment(id, paymentMethod);
     }
 
 
