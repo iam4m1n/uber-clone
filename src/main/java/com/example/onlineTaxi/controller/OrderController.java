@@ -51,8 +51,8 @@ public class OrderController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<OrderEntity> getById(@RequestParam Long ordeId){
-        return new ResponseEntity<>(orderService.getById(ordeId), HttpStatus.OK);
+    public ResponseEntity<OrderDTO> getById(@RequestParam Long orderId){
+        return new ResponseEntity<>(orderService.getById(orderId), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")

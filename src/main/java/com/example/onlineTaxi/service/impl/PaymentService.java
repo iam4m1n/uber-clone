@@ -3,6 +3,7 @@ package com.example.onlineTaxi.service.impl;
 
 import com.example.onlineTaxi.enums.PaymentMethod;
 import com.example.onlineTaxi.enums.PaymentStatus;
+import com.example.onlineTaxi.enums.TimeUnit;
 import com.example.onlineTaxi.enums.TravelStatus;
 import com.example.onlineTaxi.microservices.MscService;
 import com.example.onlineTaxi.model.Users.User.UserEntity;
@@ -47,12 +48,12 @@ public class PaymentService {
 
     public Payment processPayment(Long orderId, String paymentMethod) {
 
-//
+
 //        RLock lock = redissonClient.getLock("payment_lock_" + orderId);
 //
 //        try {
 //            // Try to acquire the lock, with a maximum wait time of 10,000 ms (10 seconds)
-//            if (lock.tryLock(10000)) {  // Only wait time in milliseconds
+//            if (lock.tryLock(10,TimeUnit.SECONDS)) {  // Only wait time in milliseconds
 //                try {
 //                    // Critical section (payment processing logic)
 //                    System.out.println("Processing payment for order: " + orderId);
@@ -70,10 +71,10 @@ public class PaymentService {
 //            // Handle the interruption
 //        }
 //
-//
-//
-//
-//
+
+
+
+
 
 
 
@@ -87,7 +88,7 @@ public class PaymentService {
         UserEntity userEntity = userRepository.findById(order.getUser().getId()).orElseThrow();
 
         if (order.getPayment() == null)
-            order.setPayment(Payment.builder().Id(orderId).paymentAmount(order.getCost()).paymentMethod(PaymentMethod.valueOf(paymentMethod)).modifiedTime(new Date()).status(PaymentStatus.PENDING).build());
+            order.setPayment(Payment.builder().Id(orderId).paymentAmount(order.getCost()).paymentMethod(PaymentMethod.valueOf(paymentMethod)).modifiedTime(new Date()).status(PaymentStatus.PENDING).orderEntityId(orderId).build());
 
         if (order.getStatus().equals(TravelStatus.Ongoing) && !(order.getPayment().getStatus().equals(PaymentStatus.COMPLETED) && userEntity.getBalance() >= order.getCost())){
 
@@ -111,19 +112,20 @@ public class PaymentService {
 
         }
 
+        order.getPayment().setOrderEntity(order);
+//
+//        Payment payment = Payment.builder()
+//                .paymentAmount(order.getCost())
+//                .modifiedTime(new Date())
+//                .paymentMethod(order.getPayment().getPaymentMethod())
+//                .paymentAmount(order.getCost())
+//                .status(order.getPayment().getStatus())
+//                .orderEntityId(order.getId())
+//                .build();
 
-        Payment payment = Payment.builder()
-                .paymentAmount(order.getCost())
-                .modifiedTime(new Date())
-                .paymentMethod(order.getPayment().getPaymentMethod())
-                .paymentAmount(order.getCost())
-                .status(order.getPayment().getStatus())
-                .orderEntityId(order.getId())
-                .build();
+        paymentRepository.save(order.getPayment());
 
-        paymentRepository.save(payment);
-
-        return payment;
+        return order.getPayment();
 
     }
 

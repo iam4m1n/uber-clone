@@ -183,9 +183,9 @@ public class OrderService {
         mscService.sendNotification("for User: your trip has been canceled");
     }
 
-    public OrderEntity getById(Long ordeId) {
-        return orderRepository.findById(ordeId).orElseThrow();
-
+    public OrderDTO getById(Long ordeId) {
+        OrderEntity orderEntity =  orderRepository.findById(ordeId).orElseThrow();
+        return OrderMapper.orderToOrderDto(orderEntity);
     }
 
     public OrderEntity update(Long orderId, double discount, String discountCode) {

@@ -191,8 +191,8 @@ public class DataInitializer {
 
     @PostConstruct
     public void rebbit(){
-        mscService.sendNotification("every thins is good as hell!!!");
+        mscService.sendNotification("Main app is starting up .......");
 
-        mscService.sendTransaction("chi dare misheeeeeeeee??????????????");
+        mscService.sendTransaction("Main app is starting up .......");
     }
 }

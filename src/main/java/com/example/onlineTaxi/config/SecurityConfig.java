@@ -41,7 +41,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(request -> request
                 .requestMatchers("/login", "/register", "/refresh-token")
                 .permitAll()
-                .anyRequest().permitAll())
+                .anyRequest().authenticated())
         // Stateless
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         // add JWT filter befor UPAF

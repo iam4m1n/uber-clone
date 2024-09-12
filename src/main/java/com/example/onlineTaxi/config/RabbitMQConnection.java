@@ -22,10 +22,12 @@ public class RabbitMQConnection {
 
     public static Connection getConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbitMQHost);
-        factory.setPort(rabbitMQPort);
-        factory.setUsername(rabbitMQUsername);
-        factory.setPassword(rabbitMQPassword);
+        factory.setHost("localhost");
+        factory.setUsername("guest");
+        factory.setPassword("guest");
+//        factory.setHost(rabbitMQHost);
+//        factory.setUsername(rabbitMQUsername);
+//        factory.setPassword(rabbitMQPassword);
         return factory.newConnection();
     }
 }
